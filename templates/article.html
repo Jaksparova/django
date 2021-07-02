@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8">
+        <article>
+            <header class="mb-4">
+                <h3 class="fw-bolder mb-1">{{article.title}}</h3>
+                <p class="lead">by {{article.author}}</p>
+                <hr>
+                <div class="text-muted fst-italic mb-2">{{article.created_date}}</div>
+                <hr>
+            </header>
+            {% if article.article_image %}
+            <figure class="mb-4"><img class="img-fluid rounded" src="{{article.article_image.url}}" alt="..." />
+            </figure>
+            {% endif %}
+            <hr>
+            <section class="mb-5">
+                <p>{{article.content|safe}}</p>
+            </section>
+        </article>
+        <!-- Comments section-->
+        <h3>Yorumlar</h3>
+        <hr>
+        <section class="mb-5">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <!-- Comment form-->
+                    <form class="mb-4" action="{% url 'article:addcomment' article.id %}" method="POST">
+                        {% csrf_token %}
+                        {% if request.user.is_authenticated %}
+                        {% else %}
+                        <input class="form-control" type="text" name="comment_author" placeholder="İsminizi Giriniz"
+                            style="margin-bottom: 10px;">
+                        {% endif %}
+                        <textarea class="form-control" rows="3" name="comment_content"
+                            placeholder="Join the discussion and leave a comment!">
+                        </textarea>
+                        <button style="margin-top: 10px;" type="submit" class="btn btn-primary">Yorum Ekle</button>
+                    </form>
+                    <!-- Single comment-->
+                    {% if comments %}
+                    {% for comment in comments %}
+                    <div class="d-flex" id="comments">
+                        <div class="ms-3">
+                            <h6>{{comment.comment_author}}</h6>
+                            {{comment.comment_content}}
+                        </div>
+                    </div>
+                    <small>{{comment.comment_date}}</small><br>
+                    <a style="margin-top: 10px;" class="btn btn-success"
+                        href="{% url 'article:likecomment' comment.id article.id %}">Beğen</a> Beğeni:
+                    {{comment.comment_like}}
+                    <hr>
+                    {% endfor %}
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <b>Henüz bir yorum bulunmuyor</b>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}

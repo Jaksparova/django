@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="jumbotron text-center">
+    <h3>Yazılım Bilimi Bloğuna Hoşgeldiniz</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo, sit.</p>
+</div>
+<p>
+{% if request.user.is_authenticated %}
+Hoş Geldiniz: {{request.user.username}}
+{% endif %}
+</p>
+{% endblock body %}
